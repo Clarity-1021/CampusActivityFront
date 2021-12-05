@@ -26,11 +26,11 @@
     <!--菜单栏第2行外框-->
     <div class="MenuRow-2">
       <div class="MenuBox"><!--菜单外框-->
-        <div class="menuItem" @click="goToMyConference">我的会议</div>
-        <div class="menuItem" @click="goToAllConference">所有会议</div>
+        <div class="menuItem" @click="goToMyConference">我的活动</div>
+        <div class="menuItem" @click="goToAllConference">所有活动</div>
 <!--        <div class="menuItem" @click="alertNo">~其他功能~</div>-->
 <!--        <div class="menuItem" @click="alertNo">~暂未开发~</div>-->
-        <div class="menuItem" @click="goToHome">Conference System</div>
+        <div class="menuItem" @click="goToHome">主页</div>
         <div class="menuAnimation" v-if="currentMenuItem === ''"></div>
         <div class="menuAnimation start-1" v-if="currentMenuItem === 'MyConference'"></div>
         <div class="menuAnimation start-2" v-if="currentMenuItem === 'AllConference'"></div>
@@ -89,11 +89,11 @@
         <span>{{email}}</span>
       </v-row>
       <v-row class="text-center subtitle-1 my-1 mx-4">
-        <span class="text--disabled">区域：</span>
+        <span class="text--disabled">学校：</span>
         <span>{{region}}</span>
       </v-row>
       <v-row class="text-center subtitle-1 my-1 mx-4">
-        <span class="text--disabled">单位：</span>
+        <span class="text--disabled">组织：</span>
         <span>{{organization}}</span>
       </v-row>
     </el-dialog>
@@ -267,11 +267,11 @@
             message: '管理员没有此权限'
           });
         } else {
-          if(this.currentMenuItem === 'NewConference'){
+          if(this.currentMenuItem === 'NewActivity'){
             this.refresh();
           }
           else{
-            this.$router.push({path: './NewConference'});
+            this.$router.push({path: './NewActivity'});
           }
         }
       },
@@ -288,7 +288,7 @@
             this.refresh();
           }
           else{
-            this.$router.push({path:'./Contribute'});
+            this.$router.push({path:'./ActivityList'});
           }
         }
       },

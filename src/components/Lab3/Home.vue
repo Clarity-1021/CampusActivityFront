@@ -10,8 +10,8 @@
       <div class="LogoContainer"><!--Logo-->
         <svg viewBox="0 0 1000 300">
           <symbol id="line-text">
-            <text text-anchor="middle" x="50%" y="45%">Conference</text>
-            <text text-anchor="middle" x="50%" y="95%">System</text>
+            <text text-anchor="middle" x="50%" y="45%">Campus</text>
+            <text text-anchor="middle" x="50%" y="95%">Activity</text>
           </symbol>
           <use xlink:href="#line-text" class="text"></use>
           <use xlink:href="#line-text" class="text"></use>

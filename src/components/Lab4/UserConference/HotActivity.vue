@@ -11,12 +11,24 @@
         <!--第1行/抬头-->
         <div class="DisplayRow-1">
           <div class="MenuBox-x">
-            <div class="MenuBox-x-item" @click="goToContribute">投稿中</div>
-            <div class="MenuBox-x-item" @click="refresh">其他会议</div>
+            <div class="MenuBox-x-item" @click="goToContribute">活动列表</div>
+            <div class="MenuBox-x-item" @click="refresh">推荐活动</div>
             <div class="MenuBox-xAnimation start-2"></div>
           </div>
         </div>
         <!--第2行/内容框-->
+        <div class="DisplayRow-2">
+          <div class="my-3" style="width: 100%">
+            <v-carousel v-model="model">
+              <v-carousel-item
+                v-for="(picture, i) in pictures"
+                :key="i"
+                :src="picture"
+              >
+              </v-carousel-item>
+            </v-carousel>
+          </div>
+        </div>
         <div class="DisplayRow-2">
           <v-container class="displayConfDetail">
             <v-row justify="center">
@@ -137,13 +149,20 @@
 </template>
 <script>
   export default {
-    name: 'adminConferenceChecked',
+    name: 'HotActivity',
     data(){
       return{
         number: -1,
         record:-1,
         currentPage:1,
         conferences:[],
+        model: 0,
+        pictures : [
+          '../../../static/images/ActivityPics/PlayCards.jpg',
+          '../../../static/images/ActivityPics/SayHello.jpg',
+          '../../../static/images/ActivityPics/EatChips.jpg',
+          '../../../static/images/ActivityPics/DiaoFish.jpg'
+        ]
       };
     },
     mounted() {
@@ -177,7 +196,7 @@
       // --------------------跳转--------------------
       //跳转投稿
       goToContribute(){
-        this.$router.push({path:'./Contribute'});
+        this.$router.push({path:'./ActivityList'});
       },
 
       //跳转会议详情

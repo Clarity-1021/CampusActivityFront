@@ -11,8 +11,8 @@
         <!--第1行/抬头-->
         <div class="DisplayRow-1">
           <div class="MenuBox-x">
-            <div class="MenuBox-x-item" @click="refresh">投稿中</div>
-            <div class="MenuBox-x-item" @click="goToOtherConference">其他会议</div>
+            <div class="MenuBox-x-item" @click="refresh">活动列表</div>
+            <div class="MenuBox-x-item" @click="goToOtherConference">推荐活动</div>
             <div class="MenuBox-xAnimation start-1"></div>
           </div>
         </div>
@@ -127,7 +127,7 @@
 
 <script>
   export default {
-    name: 'contribute',
+    name: 'ActivityList',
     data(){
       return{
         number: -1,
@@ -170,7 +170,7 @@
 
       //跳转其他会议
       goToOtherConference(){
-        this.$router.push({path:'./OtherConference'});
+        this.$router.push({path:'./HotActivity'});
       },
 
       //跳转会议详情

@@ -9,52 +9,36 @@
     <div class="right-container">
       <div class="DisplayBox mt-12 mt-md-0">
         <!--第1行/抬头-->
-        <div class="DisplayRow-1"><span class="smallTitle">创建会议</span></div>
+        <div class="DisplayRow-1"><span class="smallTitle">创建活动</span></div>
         <!--第2行/注册表单-->
         <div class="DisplayRow-2">
           <el-form class="ConstructConfBox" cl :model="newConferenceForm" ref="newConferenceForm" :rules="rules" status-icon label-width="auto">  <!--相当于v-bind:model的缩写-->
-            <el-form-item  label="会议简称" prop="abbr">
+            <el-form-item  label="活动名称" prop="abbr">
               <el-input style="width: 100%" autofocus v-model="newConferenceForm.abbr" placeholder="请输入"></el-input>
             </el-form-item>
 
-            <el-form-item label="会议全称" prop="fullName">
+            <el-form-item label="活动简介" prop="fullName">
               <el-input style="width: 100%" v-model="newConferenceForm.fullName" placeholder="请输入"></el-input>
             </el-form-item>
 
-            <el-form-item label="会议时间" prop="jxwTest">
-              <el-date-picker style="width: 100%" v-model="newConferenceForm.jxwTest" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions0"></el-date-picker>
+            <el-form-item label="举办方" prop="fullName">
+              <el-input style="width: 100%" v-model="newConferenceForm.HosterName" placeholder="请输入"></el-input>
             </el-form-item>
 
-            <el-form-item  label="会议举办地点" prop="place" >
+            <el-form-item  label="活动地点" prop="place" >
               <el-input style="width: 100%" v-model="newConferenceForm.place" placeholder="请输入"></el-input>
             </el-form-item>
 
-            <el-form-item label="投稿截止日期" prop="submissionDdl" placeholder="请输入投稿截止日期">
+            <el-form-item label="活动时间" prop="jxwTest">
+              <el-date-picker style="width: 100%" v-model="newConferenceForm.jxwTest" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions0"></el-date-picker>
+            </el-form-item>
+
+            <el-form-item label="报名截止日期" prop="submissionDdl" placeholder="请输入投稿截止日期">
               <el-date-picker style="width: 100%" type="date" v-model="newConferenceForm.submissionDdl" placeholder="请选择" :picker-options="pickerOptions0"></el-date-picker>
             </el-form-item>
 
-            <el-form-item label="评审结果发布日期" prop="publishTime">
-              <el-date-picker style="width: 100%" type="date" v-model="newConferenceForm.publishTime" placeholder="请选择" :picker-options="pickerOptions0"></el-date-picker>
-            </el-form-item>
-
-            <el-form-item label="可选会议话题" prop="">
-              <v-container-fluid class="d-flex flex-row justify-start align-center flex-wrap">
-                <el-tag style="margin: 3px;cursor: pointer" title="点击添加话题" type="success" effect="plain" :key="tag" v-for="tag in topicCanBeChosen" @click="addTopic(tag)">
-                  {{tag}}<!--陈列可选topic-->
-                </el-tag>
-
-                <el-tag style="margin: 3px;cursor: pointer" title="点击删除话题" type="success" effect="light" :key="tag" v-for="tag in topicChosen" @click="deleteTopic(tag)">
-                  {{tag}}<!--陈列可选topic-->
-                </el-tag>
-              </v-container-fluid>
-            </el-form-item>
-
-            <el-form-item label="添加更多话题" prop="">
-              <v-container-fluid class="d-flex flex-row justify-start align-center flex-wrap">
-                <el-input style="width: 90px" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm"></el-input>
-
-                <el-button type="success" plain style="margin: 3px" v-else size="small" @click="showInput">+ 添加话题</el-button>
-              </v-container-fluid>
+            <el-form-item label="海报图片" prop="submissionDdl" placeholder="请输入投稿截止日期">
+              <el-date-picker style="width: 100%" type="date" v-model="newConferenceForm.PosterPicure" placeholder="请选择" :picker-options="pickerOptions0"></el-date-picker>
             </el-form-item>
 
             <el-form-item>
@@ -69,15 +53,15 @@
 </template>
 <script>
   export default {
-    name: 'test',
+    name: 'NewActivity',
     data(){
       var validateAddr = (rule,value,callback)=>{
         var pattern = /^[a-zA-Z0-9]+$/;
         if(value === ''){
-          callback(new Error('会议简称不能为空'));
+          callback(new Error('活动简称不能为空'));
         }
         else if(!pattern.test(value)){
-          callback(new Error('会议简称只能包含数字和字母'));
+          callback(new Error('活动简称只能包含数字和字母'));
         }
         else{
           callback();
@@ -95,7 +79,7 @@
 
       var validateContributeDeadline = (rule,value,callback)=> {
         if (value >= this.newConferenceForm.jxwTest[0]) {
-          callback(new Error('投稿截止日期必须在会议开始时间之前!'));
+          callback(new Error('投稿截止日期必须在活动开始时间之前!'));
         }else if (value<new Date()){
           callback(new Error('投稿截止日期必须在未来!'));
         } else {
@@ -106,7 +90,7 @@
 
       var validatePublishTime = (rule,value,callback)=> {
         if (value >= this.newConferenceForm.jxwTest[0]||value<=this.newConferenceForm.submissionDdl) {
-          callback(new Error('评审发布时间必须在会议开始之前和投稿截止之后!'));
+          callback(new Error('评审发布时间必须在活动开始之前和投稿截止之后!'));
         } else {
           callback();
         }
@@ -141,18 +125,18 @@
 
         rules: {
           abbr: [
-            { required: true, message: '会议简称不能为空', trigger: 'blur' },
+            { required: true, message: '活动简称不能为空', trigger: 'blur' },
             { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' },
             {validator: validateAddr, trigger: 'blur'}
     ],
           fullName:[
-            { required: true, message: '请输入会议全称', trigger: 'blur' },
+            { required: true, message: '请输入活动全称', trigger: 'blur' },
           ],
           jxwTest: [
-            {required: true, message: '请输入会议时间', trigger: 'blur' },
+            {required: true, message: '请输入活动时间', trigger: 'blur' },
           ],
           place: [
-            {required: true, message: '请输入会议举办地点', trigger: 'blur' }
+            {required: true, message: '请输入活动举办地点', trigger: 'blur' }
           ],
           submissionDdl: [
             {required: true, message: '请输入投稿截止日期', trigger: 'blur' },
@@ -208,7 +192,7 @@
         if (this.topicChosen.length>=1) {
           this.$refs[formName].validate((valid) => {
             if (valid) {
-              this.$confirm('确定创建此会议吗？', '确认信息', {
+              this.$confirm('确定创建此活动吗？', '确认信息', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
               }).then(() => {

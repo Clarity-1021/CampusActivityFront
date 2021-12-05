@@ -24,7 +24,7 @@
             <v-icon>mdi-playlist-plus</v-icon>
           </v-btn>
         </template>
-        <span>创建会议</span>
+        <span>创建活动</span>
       </v-tooltip>
 
       <!--所有会议-->
@@ -34,7 +34,7 @@
             <v-icon>mdi-account-group</v-icon>
           </v-btn>
         </template>
-        <span>所有会议</span>
+        <span>所有活动</span>
       </v-tooltip>
 
       <!--我的会议-->
@@ -44,7 +44,7 @@
             <v-icon>mdi-account</v-icon>
           </v-btn>
         </template>
-        <span>我的会议</span>
+        <span>我的活动</span>
       </v-tooltip>
 
       <!--消息中心-->
@@ -96,11 +96,11 @@
         <span>{{email}}</span>
       </v-row>
       <v-row class="text-center subtitle-1 my-1 mx-4">
-        <span class="text--disabled">区域：</span>
+        <span class="text--disabled">学校：</span>
         <span>{{region}}</span>
       </v-row>
       <v-row class="text-center subtitle-1 my-1 mx-4">
-        <span class="text--disabled">单位：</span>
+        <span class="text--disabled">组织：</span>
         <span>{{organization}}</span>
       </v-row>
     </el-dialog>
@@ -275,7 +275,7 @@
             this.refresh();
           }
           else{
-            this.$router.push({path: './NewConference'});
+            this.$router.push({path: './NewActivity'});
           }
         }
       },
@@ -292,7 +292,7 @@
             this.refresh();
           }
           else{
-            this.$router.push({path:'./Contribute'});
+            this.$router.push({path:'./ActivityList'});
           }
         }
       },

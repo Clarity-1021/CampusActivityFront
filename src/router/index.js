@@ -3,13 +3,13 @@ import Router from 'vue-router'
 
 import Login from "../components/Login";
 import Register from "../components/Register";
-import NewConference from "../components/Lab4/NewConference";
+import NewActivity from "../components/Lab4/NewActivity";
 import Home from "../components/Lab3/Home";
 import MyConference from "../components/Lab4/MyConference/MyConference";
-import Contribute from "../components/Lab3/UserConference/Contribute";
+import ActivityList from "../components/Lab3/UserConference/ActivityList";
 import Message from "../components/Lab4/Message";
 import Paper from "../components/Lab4/UserConference/Paper/Paper";
-import OtherConference from "../components/Lab4/UserConference/OtherConference";
+import HotActivity from "../components/Lab4/UserConference/HotActivity";
 import AdminConferenceChecked from "../components/Lab4/AdminConference/AdminConferenceChecked";
 import AdminConferenceUnChecked from "../components/Lab3/AdminConference/AdminConferenceUnChecked";
 import MyConferenceAttend from "../components/Lab4/MyConference/MyConferenceAttend";
@@ -18,12 +18,13 @@ import Author from "../components/Lab4/MyConference/Charactor/Author";
 import PCMember from "../components/Lab4/MyConference/Charactor/PCMember";
 import ScorePaper from "../components/Lab5/MyConference/Charactor/ScorePaper/ScorePaper";
 import DiscussPaper from "../components/Lab5/MyConference/Charactor/DiscussPaper/DiscussPaper";
-import CS from "../components/Lab5/CS";
+import HelloPage from "../components/Lab5/HelloPage";
 import store from '../store'
 
 Vue.use(Router);
 
 export const router = new Router({
+  mode : 'history',
   routes: [
     {
       path: '/',
@@ -34,14 +35,14 @@ export const router = new Router({
       }
     },
     {
-      path: '/cs',
-      name: 'CS',
-      component: CS,
+      path: '/HelloPage',
+      name: 'HelloPage',
+      component: HelloPage,
     },
     {
-      path: '/NewConference',
-      name: 'NewConference',
-      component: NewConference,
+      path: '/NewActivity',
+      name: 'NewActivity',
+      component: NewActivity,
       meta: {
         requireAuth: true // 需要登录权限
       }
@@ -65,9 +66,9 @@ export const router = new Router({
       }
     },
     {
-      path: '/Contribute',
-      name: 'Contribute',
-      component: Contribute,
+      path: '/ActivityList',
+      name: 'ActivityList',
+      component: ActivityList,
       meta: {
         requireAuth: true // 需要登录权限
       }
@@ -89,9 +90,9 @@ export const router = new Router({
       }
     },
     {
-      path: '/OtherConference',
-      name: 'OtherConference',
-      component: OtherConference,
+      path: '/HotActivity',
+      name: 'HotActivity',
+      component: HotActivity,
       meta: {
         requireAuth: true // 需要登录权限
       }
