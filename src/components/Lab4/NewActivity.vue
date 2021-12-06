@@ -13,32 +13,48 @@
         <!--第2行/注册表单-->
         <div class="DisplayRow-2">
           <el-form class="ConstructConfBox" cl :model="newConferenceForm" ref="newConferenceForm" :rules="rules" status-icon label-width="auto">  <!--相当于v-bind:model的缩写-->
-            <el-form-item  label="活动名称" prop="abbr">
-              <el-input style="width: 100%" autofocus v-model="newConferenceForm.abbr" placeholder="请输入"></el-input>
+            <el-form-item  label="活动名称" prop="FullName">
+              <el-input style="width: 100%" autofocus v-model="newConferenceForm.FullName" placeholder="请输入"></el-input>
             </el-form-item>
 
-            <el-form-item label="活动简介" prop="fullName">
-              <el-input style="width: 100%" v-model="newConferenceForm.fullName" placeholder="请输入"></el-input>
+            <el-form-item label="活动简介" prop="Abstract">
+              <el-input style="width: 100%" v-model="newConferenceForm.Abstract" placeholder="请输入"></el-input>
             </el-form-item>
 
-            <el-form-item label="举办方" prop="fullName">
-              <el-input style="width: 100%" v-model="newConferenceForm.HosterName" placeholder="请输入"></el-input>
+            <el-form-item label="举办方" prop="Hoster">
+              <el-input style="width: 100%" v-model="newConferenceForm.Hoster" placeholder="请输入"></el-input>
             </el-form-item>
 
-            <el-form-item  label="活动地点" prop="place" >
-              <el-input style="width: 100%" v-model="newConferenceForm.place" placeholder="请输入"></el-input>
+            <el-form-item  label="活动地点" prop="Place" >
+              <el-input style="width: 100%" v-model="newConferenceForm.Place" placeholder="请输入"></el-input>
             </el-form-item>
 
-            <el-form-item label="活动时间" prop="jxwTest">
-              <el-date-picker style="width: 100%" v-model="newConferenceForm.jxwTest" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions0"></el-date-picker>
+            <el-form-item label="活动时间" prop="ActivityTime">
+              <el-date-picker style="width: 100%" v-model="newConferenceForm.ActivityTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions0"></el-date-picker>
             </el-form-item>
 
-            <el-form-item label="报名截止日期" prop="submissionDdl" placeholder="请输入投稿截止日期">
-              <el-date-picker style="width: 100%" type="date" v-model="newConferenceForm.submissionDdl" placeholder="请选择" :picker-options="pickerOptions0"></el-date-picker>
+            <el-form-item label="报名时间" prop="ApplyTime">
+              <el-date-picker style="width: 100%" v-model="newConferenceForm.ApplyTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions0"></el-date-picker>
             </el-form-item>
 
-            <el-form-item label="海报图片" prop="submissionDdl" placeholder="请输入投稿截止日期">
-              <el-date-picker style="width: 100%" type="date" v-model="newConferenceForm.PosterPicure" placeholder="请选择" :picker-options="pickerOptions0"></el-date-picker>
+            <el-form-item label="海报图片" prop="PosterPicture">
+              <el-upload
+                class="upload-demo"
+                drag
+                ref="upload" action="#" accept=".jpg"
+                :http-request="uploadSubmit"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :on-change="handleProgress"
+                :on-exceed="handleExceed"
+                :before-remove="beforeRemove"
+                :file-list="fileList"
+                list-type="picture"
+                :limit="1">
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+              </el-upload>
             </el-form-item>
 
             <el-form-item>
@@ -78,7 +94,7 @@
       };
 
       var validateContributeDeadline = (rule,value,callback)=> {
-        if (value >= this.newConferenceForm.jxwTest[0]) {
+        if (value >= this.newConferenceForm.jxwTest1[0]) {
           callback(new Error('投稿截止日期必须在活动开始时间之前!'));
         }else if (value<new Date()){
           callback(new Error('投稿截止日期必须在未来!'));
@@ -89,7 +105,7 @@
 
 
       var validatePublishTime = (rule,value,callback)=> {
-        if (value >= this.newConferenceForm.jxwTest[0]||value<=this.newConferenceForm.submissionDdl) {
+        if (value >= this.newConferenceForm.jxwTest1[0]||value<=this.newConferenceForm.submissionDdl) {
           callback(new Error('评审发布时间必须在活动开始之前和投稿截止之后!'));
         } else {
           callback();
@@ -115,131 +131,181 @@
         dialogFormVisible : false,
 
         newConferenceForm: {
-          abbr:'',
-          fullName:'',
-          place:'',
-          submissionDdl:'',
-          publishTime:'',
-          jxwTest: [],
+          FullName:'',
+          Abstract:'',
+          Hoster:'',
+          Place:'',
+          ActivityTime: [],
+          ApplyTime: [],
         },
 
+        fileList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
+
         rules: {
-          abbr: [
-            { required: true, message: '活动简称不能为空', trigger: 'blur' },
-            { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' },
-            {validator: validateAddr, trigger: 'blur'}
-    ],
-          fullName:[
-            { required: true, message: '请输入活动全称', trigger: 'blur' },
+          FullName:[
+            { required: true, message: '请输入活动名称', trigger: 'blur' },
           ],
-          jxwTest: [
+          Abstract: [
+            {required: true, message: '请输入活动简介', trigger: 'blur' },
+          ],
+          Hoster: [
+            {required: true, message: '请输入举办方', trigger: 'blur' },
+          ],
+          Place: [
+            {required: true, message: '请输入活动地点', trigger: 'blur' },
+          ],
+          ActivityTime: [
             {required: true, message: '请输入活动时间', trigger: 'blur' },
           ],
-          place: [
-            {required: true, message: '请输入活动举办地点', trigger: 'blur' }
+          ApplyTime: [
+            {required: true, message: '请输入报名时间', trigger: 'blur' },
           ],
-          submissionDdl: [
-            {required: true, message: '请输入投稿截止日期', trigger: 'blur' },
-            {validator: validateContributeDeadline, trigger: 'blur'}
-          ],
-          publishTime: [
-            {required: true, message: '请输入评审结果发布日期', trigger: 'blur' },
-            {validator: validatePublishTime, trigger: 'blur'}
-          ]
         }
       };
     },
     methods: {
-      // 新增topic相关函数start
-      addTopic(tag){
-        //if (this.topicChosen.indexOf(tag)===-1){
-          this.topicChosen.push(tag);
-          this.topicCanBeChosen.splice(this.topicCanBeChosen.indexOf(tag),1);
+      handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+      handlePreview(file) {
+        console.log(file);
+      },
+      handleExceed(files, fileList) {
+        this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+      },
+      beforeRemove(file, fileList) {
+        return this.$confirm(`确定移除 ${ file.name }？`);
       },
 
-      deleteTopic(tag){
-          this.topicCanBeChosen.push(tag);
-          this.topicChosen.splice(this.topicChosen.indexOf(tag),1);
-      },
-
-      // 点击添加话题按钮后显示topic输入框
-      showInput() {
-        this.inputVisible = true;
-        this.$nextTick(_ => {
-          this.$refs.saveTagInput.$refs.input.focus();
-        });
-      },
-
-      handleInputConfirm() {
-        let inputValue = this.inputValue;
-        if (inputValue) {
-          if (this.topicChosen.indexOf(inputValue) === -1) {
-            this.topicChosen.push(inputValue);
-          } else {
-            this.$notify.info({
-              title: '添加话题失败',
-              message: '已经添加该话题，请勿重复添加~'
-            });
-          }
-        }
-
-        this.inputVisible = false;
-        this.inputValue = '';
-      },
-      // 新增topic相关函数end
+      // uploadSubmit(param){
+      //   this.$refs['submitForm'].validate((valid) => {
+      //     if (valid){
+      //       this.$confirm('确定上传吗？', '确认信息', {
+      //         confirmButtonText: '确定',
+      //         cancelButtonText: '取消',
+      //       }).then(() => {
+      //         var fileObj = param.file;
+      //         var form = new FormData();
+      //         var params;
+      //         if (this.modify===0) {
+      //           params = JSON.stringify({
+      //             "conference_id": this.conference_id,
+      //             "title": this.submitForm.paperTitle,
+      //             "summary": this.submitForm.paperAbstract,
+      //             "topics": this.topicChosen,
+      //             "authors": this.tableData
+      //           });
+      //         }else {
+      //           params=JSON.stringify({
+      //             "paper_id": this.getQueryVariable("paper_id"),
+      //             "title": this.submitForm.paperTitle,
+      //             "summary": this.submitForm.paperAbstract,
+      //             "topics": this.topicChosen,
+      //             "authors": this.tableData
+      //           });
+      //         }
+      //         form.append("file", fileObj);
+      //         form.append("params",new Blob([params], {type: "application/json"}));
+      //         if (fileObj.type!=="application/pdf"){
+      //           this.$notify.error({
+      //             title: '文件类型错误',
+      //             message: '文件必须为PDF格式'
+      //           });
+      //         }else if (fileObj.size>1000000) {
+      //           this.$notify.error({
+      //             title: '文件过大',
+      //             message: '文件大小不能超过1M'
+      //           });
+      //         }else {
+      //           var target;
+      //           if(this.modify===0){
+      //             target='/submit_paper';
+      //           }else {
+      //             target='./submit_edited_file';
+      //           }
+      //           this.$axios.post(target,
+      //             form,{
+      //               headers: {
+      //                 'Content-Type': 'multipart/form-data;boundary = ' + new Date().getTime()
+      //               }
+      //             })
+      //             .then(resp => {
+      //               this.$message({
+      //                 showClose: true,
+      //                 message: '提交成功',
+      //                 type: 'success'
+      //               });
+      //               this.$router.go(-1);
+      //             })
+      //             .catch(error => {
+      //               this.$notify.error({
+      //                 title: '文件上传失败',
+      //                 message: '您可以再次尝试'
+      //               });
+      //               console.log(error);
+      //
+      //             });
+      //         }
+      //       }).catch(() => {
+      //         //取消注销消息提示
+      //         this.$message({
+      //           showClose: true,
+      //           message: '已取消上传~',
+      //           type: 'success'
+      //         });
+      //       });
+      //     }else{
+      //       console.log('提交失败!');
+      //       return false;
+      //     }
+      //   });
+      //
+      // },
 
       submitForm(formName) {
-        if (this.topicChosen.length>=1) {
-          this.$refs[formName].validate((valid) => {
-            if (valid) {
-              this.$confirm('确定创建此活动吗？', '确认信息', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-              }).then(() => {
-                this.$axios.post('/newconference', {
-                  abbr: this.newConferenceForm.abbr,
-                  fullName: this.newConferenceForm.fullName,
-                  startTime: this.newConferenceForm.jxwTest[0],
-                  endTime: this.newConferenceForm.jxwTest[1],
-                  place: this.newConferenceForm.place,
-                  submissionDdl: this.newConferenceForm.submissionDdl,
-                  publishTime: this.newConferenceForm.publishTime,
-                  topics: this.topicChosen
-                })
-                  .then(resp => {
-                    if (resp.status === 200) {
-                      this.$notify({
-                        title: '提交成功，请耐心等待管理员批准。',
-                        type: 'success'
-                      });
-                      this.$refs[formName].resetFields();
-                    }
-                  })
-                  .catch(error => {
-                    this.$notify.error({
-                      title: '创建失败',
-                      message: '数据不符合要求！'
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.$confirm('确定创建此活动吗？', '确认信息', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+            }).then(() => {
+              this.$axios.post('/newconference', {
+                abbr: this.newConferenceForm.abbr,
+                fullName: this.newConferenceForm.fullName,
+                startTime: this.newConferenceForm.jxwTest[0],
+                endTime: this.newConferenceForm.jxwTest[1],
+                place: this.newConferenceForm.place,
+                submissionDdl: this.newConferenceForm.submissionDdl,
+                publishTime: this.newConferenceForm.publishTime,
+                topics: this.topicChosen
+              })
+                .then(resp => {
+                  if (resp.status === 200) {
+                    this.$notify({
+                      title: '提交成功，请耐心等待管理员批准。',
+                      type: 'success'
                     });
-                    console.log(error)
+                    this.$refs[formName].resetFields();
+                  }
+                })
+                .catch(error => {
+                  this.$notify.error({
+                    title: '创建失败',
+                    message: '数据不符合要求！'
+                  });
+                  console.log(error)
 
-                  })
-              }).catch(() => {
-                //取消注销消息提示
-                this.$message({
-                  showClose: true,
-                  message: '已取消创建~',
-                  type: 'success'
-                });
+                })
+            }).catch(() => {
+              //取消注销消息提示
+              this.$message({
+                showClose: true,
+                message: '已取消创建~',
+                type: 'success'
               });
-
-            }
-          });
-        }else {
-          this.$notify.info({
-            title: '无法创建',
-            message: '话题数目必须不少于1~'
-          });
-        }
+            });
+          }
+        })
       },
 
       resetForm(formName) {

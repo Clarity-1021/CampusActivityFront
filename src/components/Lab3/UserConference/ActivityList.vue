@@ -18,6 +18,34 @@
         </div>
         <!--第2行/内容框-->
         <div class="DisplayRow-2">
+          <v-row style="width: 100%">
+            <v-col xs="12" sm="4" md="4" lg="3" cols="12">
+              <v-text-field color="green darken-3" dense outlined clearable label="客户证件号" v-model="form.khh"></v-text-field>
+            </v-col>
+            <v-col xs="12" sm="4" md="4" lg="3" cols="12">
+              <v-select clearable menu-props="auto" color="green darken-3" outlined item-text="state" item-value="num" :items="items" label="账单情况" v-model="form.dkzt" dense></v-select>
+            </v-col>
+            <v-col xs="12" sm="4" md="4" lg="3" cols="12">
+              <v-btn @click="searchAccount" :loading="progressSearch" dark color="green darken-3">搜索</v-btn>
+            </v-col>
+          </v-row>
+
+          <div style="width: 100%; min-width: 950px">
+            <v-progress-linear :active="progressSearch" dark color="green" indeterminate height="5"></v-progress-linear>
+            <v-data-table sort-by="loanDate" sort-desc :headers="headers" :items="tableData" :page.sync="page" :items-per-page="itemsPerPage" hide-default-footer class="elevation-1" @page-count="pageCount = $event">
+              <!--操作栏-->
+              <template v-slot:item.cz="{ item }">
+                <v-icon title="查看账单" color="green darken-3" small class="mx-1" @click="checkBillDetail(item)">mdi-clipboard-text-search-outline</v-icon>
+                <!--                            <v-icon small title="贷款详情" color="green darken-3" class="mx-1" @click="checkLoanDetail(item)">mdi-clipboard-text-outline</v-icon>-->
+                <v-icon :disabled="item.loanStatus === '未发放' || item.loanSettleStatus === 2" small title="提前还款" color="green darken-3" class="mx-1" @click="repayAll(item)">mdi-clipboard-check-multiple-outline</v-icon>
+              </template>
+            </v-data-table>
+          </div>
+          <div class="mt-3">
+
+            <v-pagination color="green darken-3" v-model="page" :length="pageCount" :total-visible="10"></v-pagination>
+          </div>
+
           <v-container class="displayConfDetail">
             <v-row justify="center">
               <v-expansion-panels popout>
