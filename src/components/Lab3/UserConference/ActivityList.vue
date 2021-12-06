@@ -18,20 +18,162 @@
         </div>
         <!--第2行/内容框-->
         <div class="DisplayRow-2">
-          <v-row style="width: 100%">
+
+          <v-row>
             <v-col xs="12" sm="4" md="4" lg="3" cols="12">
-              <v-text-field color="green darken-3" dense outlined clearable label="客户证件号" v-model="form.khh"></v-text-field>
+              <v-text-field color="green darken-3" dense outlined clearable label="活动名" v-model="SearchForm.FullName"></v-text-field>
             </v-col>
             <v-col xs="12" sm="4" md="4" lg="3" cols="12">
-              <v-select clearable menu-props="auto" color="green darken-3" outlined item-text="state" item-value="num" :items="items" label="账单情况" v-model="form.dkzt" dense></v-select>
+              <v-text-field color="green darken-3" dense outlined clearable label="主办方" v-model="SearchForm.Hoster"></v-text-field>
             </v-col>
             <v-col xs="12" sm="4" md="4" lg="3" cols="12">
-              <v-btn @click="searchAccount" :loading="progressSearch" dark color="green darken-3">搜索</v-btn>
+              <v-select clearable menu-props="auto" color="green darken-3" outlined item-text="state" item-value="num" :items="SearchFormStateItems" label="状态" v-model="SearchForm.State" dense></v-select>
+            </v-col>
+            <v-col xs="12" sm="4" md="4" lg="3" cols="12">
+              <v-btn @click="OnSearch" :loading="progressSearch" dark color="green darken-3">搜索</v-btn>
             </v-col>
           </v-row>
 
-          <div style="width: 100%; min-width: 950px">
+          <!--展示病床信息-->
+          <v-data-iterator :items="items" :items-per-page.sync="itemsPerPage" :page="page" hide-default-footer>
+            <template v-slot:header>
+              <v-toolbar dark color="blue darken-3" class="mb-1">
+
+                <span>每页病床数量</span>
+                <v-menu offset-y>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn light text color="white" class="ml-2" v-bind="attrs" v-on="on">
+                      {{ itemsPerPage }}
+                      <v-icon>mdi-chevron-down</v-icon>
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item v-for="(number, index) in itemsPerPageArray" :key="index" @click="updateitemsPerPage(number)">
+                      <v-list-item-title>{{ number }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+
+                <v-spacer></v-spacer>
+
+                <span class="mr-4">
+              第 {{ page }} 页 共 {{ numberOfPages }} 页
+          </span>
+                <v-btn light fab small class="mr-1" @click="formerPage">
+                  <v-icon>mdi-chevron-left</v-icon>
+                </v-btn>
+                <v-btn fab light small class="ml-1" @click="nextPage">
+                  <v-icon>mdi-chevron-right</v-icon>
+                </v-btn>
+
+              </v-toolbar>
+            </template>
+
+            <template v-slot:default="props">
+              <v-row>
+                <v-col v-for="item in props.items" :key="item.id" cols="12" sm="6" md="4" lg="3">
+                  <v-card>
+                    <v-card-title class="subheading font-weight-bold">
+                      {{ item.id }}
+                    </v-card-title>
+
+                    <v-divider></v-divider>
+
+                    <v-list dense>
+                      <v-list-item>
+                        <v-list-item-content class="font-weight-bold">
+                          病人
+                        </v-list-item-content>
+                        <v-list-item-content class="align-end">
+                          {{ item.patient.name }}
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-list>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </template>
+          </v-data-iterator>
+
+          <div style="width: 100%">
             <v-progress-linear :active="progressSearch" dark color="green" indeterminate height="5"></v-progress-linear>
+
+            <v-card
+              :loading="progressSearch"
+              class="mx-auto my-12"
+              max-width="374"
+            >
+              <template slot="progress">
+                <v-progress-linear
+                  color="deep-purple"
+                  height="10"
+                  indeterminate
+                ></v-progress-linear>
+              </template>
+
+              <v-img
+                height="250"
+                src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
+              ></v-img>
+
+              <v-card-title>活动名字七个字</v-card-title>
+
+              <v-card-text>
+                <v-row
+                  align="center"
+                  class="mx-0"
+                >
+                  <v-rating
+                    :value="4.5"
+                    color="amber"
+                    dense
+                    half-increments
+                    readonly
+                    size="14"
+                  ></v-rating>
+
+                  <div class="grey--text ms-4">
+                    4.5 (413)
+                  </div>
+                </v-row>
+
+                <div class="my-4 text-subtitle-1">
+                  $ • Italian, Cafe
+                </div>
+
+                <div>Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.</div>
+              </v-card-text>
+
+              <v-divider class="mx-4"></v-divider>
+
+              <v-card-title>Tonight's availability</v-card-title>
+
+              <v-card-text>
+                <v-chip-group
+                  v-model="selection"
+                  active-class="deep-purple accent-4 white--text"
+                  column
+                >
+                  <v-chip>5:30PM</v-chip>
+
+                  <v-chip>7:30PM</v-chip>
+
+                  <v-chip>8:00PM</v-chip>
+
+                  <v-chip>9:00PM</v-chip>
+                </v-chip-group>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-btn
+                  color="deep-purple lighten-2"
+                  text
+                  @click="reserve"
+                >
+                  Reserve
+                </v-btn>
+              </v-card-actions>
+            </v-card>
             <v-data-table sort-by="loanDate" sort-desc :headers="headers" :items="tableData" :page.sync="page" :items-per-page="itemsPerPage" hide-default-footer class="elevation-1" @page-count="pageCount = $event">
               <!--操作栏-->
               <template v-slot:item.cz="{ item }">
@@ -41,6 +183,7 @@
               </template>
             </v-data-table>
           </div>
+
           <div class="mt-3">
 
             <v-pagination color="green darken-3" v-model="page" :length="pageCount" :total-visible="10"></v-pagination>
@@ -162,6 +305,70 @@
         record:-1,
         currentPage:1,
         conferences:[],
+        SearchForm: {
+          FullName: '',
+          Hoster: '',
+          State: '',
+        },
+        SearchFormStateItems: [
+          { state: '未开放报名', num: 1, },
+          { state: '报名ing', num: 2, },
+          { state: '报名截止', num: 3, },
+          { state: '活动ing', num: 4, },
+          { state: '活动结束', num: 5, },
+        ],
+        progressSearch: false,
+        headers: [
+          { text: '借据号', value: 'iouNum', sortable: false, align: 'center' },
+          { text: '客户号', value: 'customerCode', sortable: false, align: 'center' },
+          { text: '客户名', value: 'customerName', sortable: false, align: 'center' },
+          { text: '贷款状态', value: 'loanStatus', sortable: false, align: 'center' },
+          { text: '贷款产品', value: 'productName', sortable: false, align: 'center' },
+          { text: '贷款产品编号', value: 'productCode', sortable: false, align: 'center' },
+          { text: '逾期金额（元）', value: 'overdueBalance', sortable: false, align: 'center' },
+          { text: '发放日期', value: 'loanDate', align: 'center' },
+          { text: '操作', value: 'cz', sortable: false, align: 'center' },
+        ],
+        itemsPerPageArray: [4, 8, 12],
+        page: 1,
+        itemsPerPage: 4,
+        items: [
+          {
+            id: '123',
+            patient: {
+              id: '1',
+              name: '小李'
+            }
+          },
+          {
+            id: '1234',
+            patient: {
+              id: '2',
+              name: '小三'
+            }
+          },
+          {
+            id: '1233',
+            patient: {
+              id: '5',
+              name: '小搜'
+            }
+          },
+          {
+            id: '1323',
+            patient: {
+              id: '6',
+              name: '小无'
+            }
+          },
+          {
+            id: '1323',
+            patient: {
+              id: '7',
+              name: '小留'
+            }
+          }
+        ]
       };
     },
     mounted() {
@@ -186,6 +393,12 @@
 
           });
 
+      },
+
+      // Todo
+      OnSearch () {
+        this.progressSearch = true;
+        setTimeout(() => (this.progressSearch = false), 2000)
       },
 
 
