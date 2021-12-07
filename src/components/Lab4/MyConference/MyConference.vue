@@ -18,125 +18,132 @@
         </div>
         <!--第2行/内容框-->
         <div class="DisplayRow-2">
-          <v-container class="displayConfDetail">
-            <v-row justify="center">
-              <v-expansion-panels popout>
-                <v-expansion-panel hide-actions>
-                  <v-expansion-panel-header><!--简要条目陈列-->
-                    <template v-slot:actions>
-                      <v-icon>mdi-card-bulleted</v-icon>
-                    </template>
-                    <v-row align="center" class="spacer" no-gutters>
-                      <v-col class="text-center" cols="1">
-                        <span>简称</span>
-                      </v-col>
-                      <v-col class="text-center" cols="4">
-                        <span>开始日期</span>
-                      </v-col>
-                      <v-col class="text-center" cols="2">
-                        <span>审核状态</span>
-                      </v-col>
-                      <v-col class="text-center" cols="2">
-                        <span>会议状态</span>
-                      </v-col>
-                      <v-col class="text-center" cols="3">
-                        <span>身份</span>
-                      </v-col>
-                    </v-row>
-                  </v-expansion-panel-header>
-                </v-expansion-panel>
+          <v-sheet height="64" style="width: 100%">
+            <v-toolbar
+              flat
+            >
+              <v-btn
+                outlined
+                class="mr-4"
+                color="grey darken-2"
+                @click="setToday"
+              >
+                Today
+              </v-btn>
+              <v-btn
+                fab
+                text
+                small
+                color="grey darken-2"
+                @click="prev"
+              >
+                <v-icon small>
+                  mdi-chevron-left
+                </v-icon>
+              </v-btn>
+              <v-btn
+                fab
+                text
+                small
+                color="grey darken-2"
+                @click="next"
+              >
+                <v-icon small>
+                  mdi-chevron-right
+                </v-icon>
+              </v-btn>
 
-
-                <v-expansion-panel hide-actions v-if="number === 0">
-                  <v-expansion-panel-header>
-                    <template v-slot:actions>
-                      <v-icon color="warning">mdi-alert-decagram-outline</v-icon>
-                    </template>
-                    <v-row align="center" class="spacer" no-gutters>
-                      <v-col class="text-center" cols="12">
-                        <strong>您还没有创建任何会议</strong>
-                      </v-col>
-                    </v-row>
-                  </v-expansion-panel-header>
-                </v-expansion-panel>
-
-                <v-expansion-panel v-for="conference in conferences" :key="conference" hide-actions><!--会议条目循环-->
-                  <v-expansion-panel-header><!--简要条目陈列-->
-                    <v-row align="center" class="spacer" no-gutters>
-                      <v-col class="text-center textOverFlowHidden" cols="1"><!--简称-->
-                        <strong title="点击显示会议详情" v-html="conference.abbr"></strong>
-                      </v-col>
-                      <v-col class="text-center textOverFlowHidden" cols="4"><!--开始日期-->
-                        <strong title="点击显示会议详情" v-html="conference.start_time"></strong>
-                      </v-col>
-                      <v-col class="text-center" cols="2"><!--审核状态-->
-                        <el-tag v-if="conference.audit_status==='unprocessed'" class="tag-default" key="" type="info" effect="dark">待审核</el-tag>
-                        <el-tag v-if="conference.audit_status==='fail'" class="tag-default" key="" type="danger" effect="dark">未通过</el-tag>
-                        <el-tag v-if="conference.audit_status==='pass'" class="tag-default" key="" type="success" effect="dark">已通过</el-tag>
-                      </v-col>
-                      <v-col class="text-center" cols="2"><!--会议状态-->
-                        <strong v-if="conference.audit_status!=='pass'">-</strong>
-                        <el-tag v-if="conference.audit_status==='pass'&& conference.conference_stage==='close'" class="tag-default" type="danger" effect="plain">未开启投稿</el-tag>
-                        <el-tag v-if="conference.audit_status==='pass'&& conference.conference_stage==='submission'" class="tag-default" effect="plain">投稿进行中</el-tag>
-                        <el-tag v-if="conference.audit_status==='pass'&& conference.conference_stage==='submission_end'" class="tag-default" type="warning" effect="plain">投稿已结束</el-tag>
-
-                        <!--新增两个tag_jxw-->
-                        <el-tag v-if="conference.audit_status==='pass'&& conference.conference_stage==='viewing'" class="tag-default" effect="plain">审稿进行中</el-tag>
-                        <el-tag v-if="conference.audit_status==='pass'&& conference.conference_stage==='view_end'" class="tag-default" type="warning" effect="plain">审稿已结束</el-tag>
-                        <el-tag v-if="conference.conference_stage==='published_once'" class="tag-default" type="warning" effect="plain">初审已发布</el-tag>
-                        <el-tag v-if="conference.conference_stage==='reviewing'" class="tag-default" type="warning" effect="plain">复审中</el-tag>
-                        <el-tag v-if="conference.conference_stage==='review_end'" class="tag-default" type="warning" effect="plain">复审结束</el-tag>
-                        <el-tag v-if="conference.conference_stage==='published_final'" class="tag-default" type="warning" effect="plain">终审已发布</el-tag>
-
-                        <el-tag v-if="conference.audit_status==='pass'&& conference.conference_stage==='begin'" class="tag-default" type="success" effect="plain">会议进行中</el-tag>
-                        <el-tag v-if="conference.audit_status==='pass'&& conference.conference_stage==='end'" class="tag-default" type="info" ffect="plain">会议已结束</el-tag>
-                      </v-col>
-                      <v-col class="text-center" cols="3"><!--身份-->
-                        <el-tag v-if="conference.audit_status==='pass'&& conference.conference_stage!=='end'" class="tag-point" size="medium" @click="goToChair(conference.conference_id)">主席</el-tag>
-                        <el-tag type="info" v-else class="tag-point" size="small">会议已结束</el-tag>
-                      </v-col>
-                    </v-row>
-                  </v-expansion-panel-header>
-
-                  <v-expansion-panel-content><!--展开文本-->
-                    <v-divider></v-divider><!--分割线-->
-                    <v-card-text>
-                      <v-row class="text-justify">
-                        <v-col cols="6">主席：{{conference.chair_name}}</v-col>
-                        <v-col cols="6">举办地点：{{conference.place}}</v-col>
-                      </v-row>
-                      <v-row class="text-justify">
-                        <v-col cols="6">简称：{{conference.abbr}}</v-col>
-                        <v-col cols="6">全称：{{conference.fullname}}</v-col>
-                      </v-row>
-                      <v-row class="text-justify">
-                        <v-col cols="12">会议日期：{{conference.start_time}} ~ {{conference.end_time}}</v-col>
-                      </v-row>
-                      <v-row class="text-justify">
-                        <v-col cols="12" v-if="conference.submission_begin===undefined">投稿日期：未定 ~ {{conference.submission_ddl}}</v-col>
-                        <v-col cols="12" v-if="conference.submission_begin!==undefined">投稿日期：{{conference.submission_begin}} ~ {{conference.submission_ddl}}</v-col>
-                      </v-row>
-                      <v-row class="text-justify">
-                        <v-col cols="6">评审发布日期：{{conference.publish_time}}</v-col>
-                      </v-row>
-                      <v-row class="text-justify">
-                        <v-col cols="12">话题：
-                          <el-tag type="success" style="margin: 3px" :key="tag" v-for="tag in JSON.parse(conference.topics)">
-                            {{tag}}
-                          </el-tag>
-                        </v-col>
-                      </v-row>
-                    </v-card-text>
-                  </v-expansion-panel-content>
-
-                </v-expansion-panel>
-              </v-expansion-panels>
-            </v-row>
-          </v-container>
+              <v-toolbar-title v-if="$refs.calendar">
+                {{ $refs.calendar.title }}
+              </v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-menu
+                bottom
+                right
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    outlined
+                    color="grey darken-2"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    <span>{{ typeToLabel[type] }}</span>
+                    <v-icon right>
+                      mdi-menu-down
+                    </v-icon>
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item @click="type = 'day'">
+                    <v-list-item-title>Day</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item @click="type = 'week'">
+                    <v-list-item-title>Week</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item @click="type = 'month'">
+                    <v-list-item-title>Month</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </v-toolbar>
+          </v-sheet>
+          <v-sheet height="600" style="width: 100%">
+            <v-calendar
+              ref="calendar"
+              v-model="focus"
+              color="primary"
+              :events="events"
+              :event-color="getEventColor"
+              :type="type"
+              @click:event="showEvent"
+              @click:more="viewDay"
+              @click:date="viewDay"
+              @change="updateRange"
+            ></v-calendar>
+            <v-menu
+              v-model="selectedOpen"
+              :close-on-content-click="false"
+              :activator="selectedElement"
+              offset-x
+            >
+              <v-card
+                color="grey lighten-4"
+                min-width="350px"
+                flat
+              >
+                <v-toolbar
+                  :color="selectedEvent.color"
+                  dark
+                >
+                  <v-btn icon>
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                  <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
+                  <v-spacer></v-spacer>
+                  <v-btn icon>
+                    <v-icon>mdi-heart</v-icon>
+                  </v-btn>
+                  <v-btn icon>
+                    <v-icon>mdi-dots-vertical</v-icon>
+                  </v-btn>
+                </v-toolbar>
+                <v-card-text>
+                  <span v-html="selectedEvent.details"></span>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn
+                    text
+                    color="secondary"
+                    @click="selectedOpen = false"
+                  >
+                    Cancel
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-menu>
+          </v-sheet>
         </div>
-        <!--第3行/页码-->
-        <div class="DisplayRow-3" id="pag">
-          <el-pagination background @current-change="getInfo" :current-page.sync="currentPage" :page-size="10" layout="prev, pager, next, jumper" :total.sync='record'></el-pagination>        </div>
       </div>
     </div>
   </div>
@@ -150,11 +157,27 @@
         record:-1,
         currentPage:1,
         conferences:[],
+
+        focus: '',
+        type: 'month',
+        typeToLabel: {
+          month: 'Month',
+          week: 'Week',
+          day: 'Day'
+        },
+        selectedEvent: {},
+        selectedElement: null,
+        selectedOpen: false,
+        events: [],
+        colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
+        names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
+
       };
     },
 
     mounted() {
       this.getInfo()
+      this.$refs.calendar.checkChange()
     },
 
     methods: {
@@ -176,6 +199,68 @@
 
           });
 
+      },
+
+      viewDay ({ date }) {
+        this.focus = date
+        this.type = 'day'
+      },
+      getEventColor (event) {
+        return event.color
+      },
+      setToday () {
+        this.focus = ''
+      },
+      prev () {
+        this.$refs.calendar.prev()
+      },
+      next () {
+        this.$refs.calendar.next()
+      },
+      showEvent ({ nativeEvent, event }) {
+        const open = () => {
+          this.selectedEvent = event
+          this.selectedElement = nativeEvent.target
+          requestAnimationFrame(() => requestAnimationFrame(() => this.selectedOpen = true))
+        }
+
+        if (this.selectedOpen) {
+          this.selectedOpen = false
+          requestAnimationFrame(() => requestAnimationFrame(() => open()))
+        } else {
+          open()
+        }
+
+        nativeEvent.stopPropagation()
+      },
+      updateRange ({ start, end }) {
+        const events = []
+
+        const min = new Date(`${start.date}T00:00:00`)
+        const max = new Date(`${end.date}T23:59:59`)
+        const days = (max.getTime() - min.getTime()) / 86400000
+        const eventCount = 3
+
+        for (let i = 0; i < eventCount; i++) {
+          const allDay = this.rnd(0, 3) === 0
+          const firstTimestamp = this.rnd(min.getTime(), max.getTime())
+          const first = new Date(firstTimestamp - (firstTimestamp % 900000))
+          const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
+          const second = new Date(first.getTime() + secondTimestamp)
+
+          events.push({
+            name: this.names[this.rnd(0, this.names.length - 1)],
+            start: '2021-12-03',
+            end: '2021-12-04',
+            color: this.colors[this.rnd(0, this.colors.length - 1)],
+            timed: !allDay,
+          })
+        }
+
+        this.events = events
+      },
+      rnd (a, b) {
+        return Math.floor((b - a + 1) * Math.random()) + a
       },
 
 
