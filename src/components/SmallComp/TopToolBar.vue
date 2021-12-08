@@ -1,78 +1,85 @@
-<style src="../../../static/mycss/Lab3/LeftMenu.css" lang="css" scoped></style>
+<style src="" lang="css" scoped></style>
 <template>
-  <div class="left-container d-none d-md-block">
-    <!--菜单栏第1行外框-->
-    <div class="MenuRow-1">
-      <div class="MsgCenterBox"><!--消息中心外框-->
-        <div class="MsgBtnBox" @click="goToMessage">
-          <div class="spot-btn messageBtn"><i class="fa fa-bell-o"></i></div>
-          <el-badge :value="this.record" :max="10" class="badgeStyle" v-if="this.record !== 0"></el-badge>
-        </div>
-      </div>
-      <div class="MenuFirstRow-right">
-        <el-dropdown @command="handleCommand" :hide-on-click="false">
-          <div class="AvatarBox"><!--头像外框-->
-            <el-avatar :src="url" :size="66" class="avatar" v-if="myname !== 'admin'">{{myname}}</el-avatar>
-            <el-avatar :src="adminUrl" :size="66" class="avatar" v-else>{{myname}}</el-avatar>
-          </div>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="a">查看大图</el-dropdown-item>
-            <el-dropdown-item command="c">我的信息</el-dropdown-item>
-            <el-dropdown-item command="d">注销</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-      </div>
-    </div>
-    <!--菜单栏第2行外框-->
-    <div class="MenuRow-2">
-      <div class="MenuBox"><!--菜单外框-->
-        <div class="menuItem" @click="goToMyConference">我的活动</div>
-        <div class="menuItem" @click="goToAllConference">所有活动</div>
-<!--        <div class="menuItem" @click="alertNo">~其他功能~</div>-->
-<!--        <div class="menuItem" @click="alertNo">~暂未开发~</div>-->
-        <div class="menuItem" @click="goToHome">主页</div>
-        <div class="menuAnimation" v-if="currentMenuItem === ''"></div>
-        <div class="menuAnimation start-1" v-if="currentMenuItem === 'MyConference'"></div>
-        <div class="menuAnimation start-2" v-if="currentMenuItem === 'AllConference'"></div>
-        <div class="menuAnimation start-3" v-if="currentMenuItem === 'Home'"></div>
-<!--        <div class="menuAnimation start-4" v-if="currentMenuItem === ''"></div>-->
-<!--        <div class="menuAnimation start-5" v-if="currentMenuItem === ''"></div>-->
-      </div>
-    </div>
-    <!--菜单栏第3行外框-->
-    <div class="MenuRow-3">
-      <div class="NewConferenceBox">
-        <div class="NewBtnBox">
-          <div class="square-btn" @click="goToNewConference"><i class="fa fa-plus-square-o"></i></div>
-        </div>
-      </div>
-    </div>
-    <!--菜单栏第4行外框-->
-<!--    <div class="MenuRow-4">-->
-<!--      <div class="wave-btn" @click="goToAllConference">-->
-<!--        <span>所有会议</span>-->
-<!--        <div class="waveBtnEffect"></div>-->
-<!--      </div>-->
-<!--    </div>-->
+  <v-container-fluid>
+    <v-app-bar dark class="d-md-none d-block" dense absolute color="#2c3e50" elevate-on-scroll scroll-target="#scrolling-techniques-7">
 
-    <!--<el-dialog title="上传头像" :visible.sync="dialogFormVisible">-->
-      <!--<el-upload-->
-        <!--action="#"-->
-        <!--ref="upload"-->
-        <!--accept="image/*"-->
-        <!--:auto-upload="false"-->
-        <!--:limit="1"-->
-        <!--list-type="picture-card"-->
-        <!--:http-request="uploadSubmit"-->
-        <!--:on-preview="handlePictureCardPreview"-->
-        <!--:on-exceed="handleExceed"-->
-        <!--:on-remove="handleRemove">-->
-        <!--<i class="el-icon-plus"></i>-->
-      <!--</el-upload>-->
-      <el-dialog :visible.sync="dialogVisible">
-        <img width="100%" :src="url" :alt="myname + '的头像'" v-if="myname !== 'admin'">
-        <img width="100%" :src="adminUrl" alt="管理员的头像" v-else>
-      </el-dialog>
+      <!--主页-->
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on" @click="goToHome">
+            <v-icon>mdi-home</v-icon>
+          </v-btn>
+        </template>
+        <span>主页</span>
+      </v-tooltip>
+
+      <v-toolbar-title class="d-none d-sm-flex ">Conference System</v-toolbar-title>
+      <v-toolbar-title class="d-xs-flex d-sm-none">CS</v-toolbar-title>
+      <v-spacer></v-spacer>
+
+      <!--创建会议-->
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on" @click="goToNewConference">
+            <v-icon>mdi-playlist-plus</v-icon>
+          </v-btn>
+        </template>
+        <span>创建活动</span>
+      </v-tooltip>
+
+      <!--所有会议-->
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on" @click="goToAllConference">
+            <v-icon>mdi-account-group</v-icon>
+          </v-btn>
+        </template>
+        <span>所有活动</span>
+      </v-tooltip>
+
+      <!--我的会议-->
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on" @click="goToMyConference">
+            <v-icon>mdi-account</v-icon>
+          </v-btn>
+        </template>
+        <span>我的活动</span>
+      </v-tooltip>
+
+      <!--消息中心-->
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on" @click="goToMessage">
+            <v-icon>mdi-bell</v-icon>
+          </v-btn>
+        </template>
+        <span>消息中心</span>
+      </v-tooltip>
+
+      <div style="position: relative">
+        <el-badge :value="this.record" :max="10" style="position: absolute;left: -22px; top: -15px" v-if="this.record !== 0"></el-badge>
+      </div>
+
+      <el-dropdown @command="handleCommand" :hide-on-click="false">
+        <div class="AvatarBox"><!--头像外框-->
+          <v-avatar class="mx-2" color="indigo" size="36">
+            <img :src="url" :alt="myname" v-if="myname !== 'admin'" />
+            <img :src="adminUrl" alt="管理员" v-else />
+          </v-avatar>
+        </div>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item command="a">查看大图</el-dropdown-item>
+          <el-dropdown-item command="c">我的信息</el-dropdown-item>
+          <el-dropdown-item command="d">注销</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+    </v-app-bar>
+
+    <el-dialog :visible.sync="dialogVisible">
+      <img width="100%" :src="url" alt="" v-if="myname !== 'admin'">
+      <img width="100%" :src="adminUrl" alt="" v-else>
+    </el-dialog>
 
     <!--在这些空span里面填一下对应的数据_jxw-->
     <el-dialog :visible.sync="dialogVisible2">
@@ -97,34 +104,31 @@
         <span>{{organization}}</span>
       </v-row>
     </el-dialog>
+  </v-container-fluid>
 
-      <!--<div slot="footer" class="dialog-footer">-->
-        <!--<el-button @click="dialogFormVisible = false">取 消</el-button>-->
-        <!--<el-button type="primary" @click="submitUpload()">上 传</el-button>-->
-      <!--</div>-->
-    <!--</el-dialog>-->
-  </div>
 </template>
 
 
 <script>
   export default {
-    name: 'leftMenu',
+    name: 'topToolBar',
     data(){
       return{
+        avatarItems: [
+          { title: '注销' },
+        ],
+
         record:0,
-        // dialogImageUrl:"../../../static/images/默认头像.jpg",
-        // adminUrldialogImageUrl:"../../../static/images/管理员头像.PNG",
-        dialogVisible: false,
-        dialogVisible2: false,
         realname:'',
         organization:'',
         region:'',
         email:"",
-        // disabled: false
         myname:localStorage.getItem("username"),
         url:"../../../static/images/默认头像.jpg",
         adminUrl:"../../../static/images/管理员头像.PNG",
+
+        dialogVisible: false,
+        dialogVisible2: false,
       };
     },
     props:{
@@ -143,7 +147,7 @@
             this.record = resp.data.number;
           })
           .catch(error => {
-              console.log(error);
+            console.log(error);
           });
 
         this.$axios.get('/my_information')
@@ -228,7 +232,7 @@
             this.refresh();
           }
           else{
-            this.$router.push({path: './MyConference'});
+            this.$router.push({path: './MyActivityCreated'});
           }
         }
       },
@@ -267,7 +271,7 @@
             message: '管理员没有此权限'
           });
         } else {
-          if(this.currentMenuItem === 'NewActivity'){
+          if(this.currentMenuItem === 'NewConference'){
             this.refresh();
           }
           else{

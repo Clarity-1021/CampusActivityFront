@@ -1,19 +1,18 @@
-<style src="../../../../static/mycss/Lab3/MyConference/MyConference.css" scoped></style>
+<style lang="css" scoped></style>
 <template>
   <div class="HomeDiv">
     <!--菜单-->
-    <LeftMenu current-menu-item="MyConference" />
-    <TopToolBar current-menu-item="MyConference" />
+    <LeftMenu current-menu-item="Message" />
+    <TopToolBar current-menu-item="Message" />
 
     <!--组件展示-->
     <div class="right-container">
       <div class="DisplayBox mt-12 mt-md-0">
         <!--第1行/抬头-->
         <div class="DisplayRow-1">
-          <div class="MenuBox-x">
-            <div class="MenuBox-x-item" @click="refresh">我创建的</div>
-            <div class="MenuBox-x-item" @click="goToMyConferenceAttend">我参与的</div>
-            <div class="MenuBox-xAnimation start-1"></div>
+          <div style="width: 120px; height: 100%" class="d-flex flex-column justify-center align-center">
+            <div style="font-size: 18px">消息中心</div>
+            <div style="border: solid 2px; width: 100px; border-radius: 10px; border-color: rgba(26, 188, 156, 0.45)"></div>
           </div>
         </div>
         <!--第2行/内容框-->
@@ -150,14 +149,9 @@
 </template>
 <script>
   export default {
-    name: 'myConference',
-    data() {
-      return {
-        number: -1,
-        record:-1,
-        currentPage:1,
-        conferences:[],
-
+    name: 'message',
+    data(){
+      return{
         focus: '',
         type: 'month',
         typeToLabel: {
@@ -174,32 +168,30 @@
 
       };
     },
-
     mounted() {
       this.getInfo()
-      this.$refs.calendar.checkChange()
     },
-
-    methods: {
+    methods:{
       getInfo() {
-        this.$axios.get('/myConferenceChair?page='+this.currentPage)
+        this.$axios.get('/invite_message?page='+this.currentPage)
           .then(resp => {
+            this.flag=true;
             this.number = resp.data.number;
             this.record = resp.data.record;
             this.conferences = resp.data.conferences;
           })
           .catch(error => {
-              if (error.data.record===0){
-                this.number=0;
-              } else {
-                this.record=error.data.record;
-                this.currentPage=Math.ceil(this.record/10);
-              }
-              console.log(error);
+            if (error.response.data.number===0){
+              this.number=0;
+            } else {
+              this.record=error.data.record;
+              this.currentPage=Math.ceil(this.record/10);
+            }
+            console.log(error);
 
           });
-
       },
+
 
       viewDay ({ date }) {
         this.focus = date
@@ -262,25 +254,6 @@
       rnd (a, b) {
         return Math.floor((b - a + 1) * Math.random()) + a
       },
-
-
-      //刷新页面
-      refresh() {
-        this.$router.go(0);
-      },
-
-      // --------------------跳转--------------------
-
-      //跳转参与的会议
-      goToMyConferenceAttend() {
-        this.$router.push({path: './MyConferenceAttend'});
-      },
-
-      //跳转主席页面
-      goToChair(conference_id) {
-        this.$router.push({path: './Chair?conference_id='+conference_id});
-      },
-
     },
   }
 </script>

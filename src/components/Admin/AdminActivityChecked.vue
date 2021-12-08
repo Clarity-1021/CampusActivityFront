@@ -1,4 +1,4 @@
-<style src="../../../../static/mycss/Lab3/AdminConference/AdminConference.css" lang="css" scoped></style>
+<style src="../../../static/mycss/Lab3/AdminConference/AdminConference.css" lang="css" scoped></style>
 <template>
   <div class="HomeDiv">
     <!--菜单-->
@@ -140,7 +140,7 @@
 </template>
 <script>
   export default {
-    name: 'AdminConferenceChecked',
+    name: 'AdminActivityChecked',
 
     data(){
       return{
@@ -181,12 +181,12 @@
       // --------------------跳转--------------------
       //跳转已审核
       goToAdminConferenceChecked(){
-        this.$router.push({path:'./AdminConferenceChecked'});
+        refresh()
       },
 
       //跳转未审核
       goToAdminConferenceUnChecked(){
-        this.$router.push({path:'./AdminConferenceUnChecked'});
+        this.$router.push({path:'./AdminActivityUnChecked'});
       },
 
       //跳转会议详情

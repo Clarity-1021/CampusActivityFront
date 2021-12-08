@@ -9,11 +9,10 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css';
 
 //导入自己的组件
-import LeftMenu from "./components/Lab5/LeftMenu";
-import MyPaper from "./components/Lab5/MyConference/Charactor/CharactorComponents/MyPaper";
-import UploadPaper from "./components/Lab4/MyConference/Charactor/CharactorComponents/UploadPaper";
-import CheckPaper from "./components/Lab5/MyConference/Charactor/CharactorComponents/CheckPaper";
-import TopToolBar from "./components/Lab5/TopToolBar";
+import LeftMenu from "./components/SmallComp/LeftMenu";
+import ActivityDisplay from "./components/SmallComp/ActivityDisplay";
+import UploadPaper from "./components/UploadPaper";
+import TopToolBar from "./components/SmallComp/TopToolBar";
 
 // 引入vuetify
 import '@mdi/font/css/materialdesignicons.css' // Ensure you are using css-loader
@@ -22,9 +21,8 @@ import 'vuetify/dist/vuetify.min.css'
 
 
 Vue.use(LeftMenu)//全局引入
-Vue.use(MyPaper)
 Vue.use(UploadPaper)
-Vue.use(CheckPaper)
+Vue.use(ActivityDisplay)
 
 // 使用vuetify
 Vue.use(Vuetify)
@@ -79,10 +77,9 @@ axios.interceptors.response.use(
 )
 
 Vue.component('LeftMenu', LeftMenu);//初始化组件
-Vue.component('MyPaper', MyPaper);
 Vue.component('UploadPaper', UploadPaper);
-Vue.component('CheckPaper', CheckPaper);
 Vue.component('TopToolBar', TopToolBar)
+Vue.component('ActivityDisplay', ActivityDisplay)
 
 /* eslint-disable no-new */
 new Vue({
@@ -98,9 +95,8 @@ new Vue({
   components: {
     App,
     LeftMenu,
-    MyPaper,
+    ActivityDisplay,
     UploadPaper,
-    CheckPaper,
     TopToolBar,
   },
   template: '<App/>'

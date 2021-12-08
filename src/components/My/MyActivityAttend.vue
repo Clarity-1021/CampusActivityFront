@@ -1,9 +1,9 @@
-<style src="../../../../static/mycss/Lab3/AdminConference/AdminConference.css" lang="css" scoped></style>
+<style src="../../../static/mycss/Lab3/MyConference/MyConference.css" lang="css" scoped></style>
 <template>
   <div class="HomeDiv">
     <!--菜单-->
-    <LeftMenu />
-    <TopToolBar />
+    <LeftMenu current-menu-item="MyConference" />
+    <TopToolBar current-menu-item="MyConference" />
 
     <!--组件展示-->
     <div class="right-container">
@@ -11,9 +11,9 @@
         <!--第1行/抬头-->
         <div class="DisplayRow-1">
           <div class="MenuBox-x">
-            <div class="MenuBox-x-item" @click="refresh">未审核</div>
-            <div class="MenuBox-x-item" @click="goToAdminConferenceChecked">已审核</div>
-            <div class="MenuBox-xAnimation start-1"></div>
+            <div class="MenuBox-x-item" @click="goToMyConference">我创建的</div>
+            <div class="MenuBox-x-item" @click="refresh">我参与的</div>
+            <div class="MenuBox-xAnimation start-2"></div>
           </div>
         </div>
         <!--第2行/内容框-->
@@ -30,17 +30,17 @@
                       <v-col class="text-center" cols="1">
                         <span>主席</span>
                       </v-col>
-                      <v-col class="text-center" cols="3">
-                        <span>全称</span>
-                      </v-col>
                       <v-col class="text-center" cols="2">
-                        <span>地点</span>
+                        <span>简称</span>
                       </v-col>
                       <v-col class="text-center" cols="3">
                         <span>开始日期</span>
                       </v-col>
                       <v-col class="text-center" cols="3">
-                        <span>是否通过</span>
+                        <span>会议状态</span>
+                      </v-col>
+                      <v-col class="text-center" cols="3">
+                        <span>身份</span>
                       </v-col>
                     </v-row>
                   </v-expansion-panel-header>
@@ -53,7 +53,7 @@
                     </template>
                     <v-row align="center" class="spacer" no-gutters>
                       <v-col class="text-center" cols="12">
-                        <strong>没有未审核的会议</strong>
+                        <strong>您还没有参与任何会议</strong>
                       </v-col>
                     </v-row>
                   </v-expansion-panel-header>
@@ -62,25 +62,39 @@
                 <v-expansion-panel v-for="conference in conferences" :key="conference" hide-actions><!--会议条目循环-->
                   <v-expansion-panel-header><!--简要条目陈列-->
                     <v-row align="center" class="spacer" no-gutters>
-                      <v-col class="text-center textOverFlowHidden" cols="1">
+                      <v-col class="text-center textOverFlowHidden" cols="1"><!--主席-->
                         <strong title="点击显示会议详情" v-html="conference.chair_name"></strong>
                       </v-col>
-                      <v-col class="text-center textOverFlowHidden" cols="3">
-                        <strong title="点击显示会议详情" v-html="conference.fullname"></strong>
+                      <v-col class="text-center textOverFlowHidden" cols="2"><!--简称-->
+                        <strong title="点击显示会议详情" v-html="conference.abbr"></strong>
                       </v-col>
-                      <v-col class="text-center textOverFlowHidden" cols="2">
-                        <strong title="点击显示会议详情" v-html="conference.place"></strong>
-                      </v-col>
-                      <v-col class="text-center textOverFlowHidden" cols="3">
+                      <v-col class="text-center textOverFlowHidden" cols="3"><!--开始日期-->
                         <strong title="点击显示会议详情" v-html="conference.start_time"></strong>
                       </v-col>
-                      <v-col class="text-center d-flex justify-space-around hidden-sm-and-down" cols="3">
-                        <el-button class="recBtn-medium" type="success" size="small"  style="margin: 0; color: white" @click="deal(conference.conference_id,'pass')">通过</el-button>
-                        <el-button class="recBtn-medium" type="danger" size="small" style="margin: 0; color: white" @click="deal(conference.conference_id,'fail')">驳回</el-button>
-                      </v-col>
+                      <v-col class="text-center" cols="3"><!--会议状态-->
+                        <el-tag v-if="conference.conference_stage==='close'" class="tag-default" type="danger" effect="plain">未开启投稿</el-tag>
+                        <el-tag v-if="conference.conference_stage==='submission'" class="tag-default" effect="plain">投稿进行中</el-tag>
 
+                        <el-tag v-if="conference.conference_stage==='viewing'" class="tag-default" effect="plain">审稿进行中</el-tag>
+                        <el-tag v-if="conference.conference_stage==='view_end'" class="tag-default" type="warning" effect="plain">审稿已结束</el-tag>
+                        <el-tag v-if="conference.conference_stage==='published_once'" class="tag-default" type="warning" effect="plain">初审已发布</el-tag>
+                        <el-tag v-if="conference.conference_stage==='reviewing'" class="tag-default" type="warning" effect="plain">复审中</el-tag>
+                        <el-tag v-if="conference.conference_stage==='review_end'" class="tag-default" type="warning" effect="plain">复审结束</el-tag>
+                        <el-tag v-if="conference.conference_stage==='published_final'" class="tag-default" type="warning" effect="plain">终审已发布</el-tag>
+
+                        <el-tag v-if="conference.conference_stage==='submission_end'" class="tag-default" type="warning" effect="plain">投稿已结束</el-tag>
+                        <el-tag v-if="conference.conference_stage==='begin'" class="tag-default" type="success" effect="plain">会议进行中</el-tag>
+                        <el-tag v-if="conference.conference_stage==='end'" class="tag-default" type="info" effect="plain">会议已结束</el-tag>
+                      </v-col>
+                      <v-col class="text-center" cols="3"><!--身份-->
+                        <!--点击跳转作者页面_jxw-->
+                        <el-tag v-if="conference.role_name.indexOf('ROLE_author')!==-1" class="tag-point" size="medium" @click="goToAuthor(conference.conference_id,conference.conference_stage)">作者</el-tag>
+                        <!--点击跳转程序委员会委员页面_jxw-->
+                        <el-tag v-if="conference.role_name.indexOf('ROLE_pcmember')!==-1" class="tag-point" size="medium" @click="goToPCMember(conference.conference_id,conference.conference_stage)">程序委员会委员</el-tag>
+                      </v-col>
                     </v-row>
                   </v-expansion-panel-header>
+
                   <v-expansion-panel-content><!--展开文本-->
                     <v-divider></v-divider><!--分割线-->
                     <v-card-text>
@@ -110,26 +124,25 @@
                       </v-row>
                     </v-card-text>
                   </v-expansion-panel-content>
-                </v-expansion-panel>
 
+                </v-expansion-panel>
               </v-expansion-panels>
             </v-row>
           </v-container>
         </div>
         <!--第3行/页码-->
         <div class="DisplayRow-3">
-          <el-pagination background @current-change="getInfo" :current-page.sync="currentPage" :page-size="10" layout="prev, pager, next, jumper" :total.sync='record'></el-pagination>
-        </div>
+          <el-pagination background @current-change="getInfo" :current-page.sync="currentPage" :page-size="10" layout="prev, pager, next, jumper" :total.sync='record'></el-pagination>        </div>
       </div>
     </div>
   </div>
 </template>
 <script>
   export default {
-    name: 'adminConferenceUnChecked',
+    name: 'MyActivityAttend',
     data(){
       return{
-        number:-1,
+        number: -1,
         record:-1,
         currentPage:1,
         conferences:[],
@@ -140,73 +153,22 @@
     },
     methods:{
       getInfo() {
-        this.$axios.get('/get_conference?type=unchecked&page='+this.currentPage)
+        this.$axios.get('/myConferenceNotChair?page='+this.currentPage)
           .then(resp => {
+            this.number = resp.data.number;
             this.record = resp.data.record;
             this.conferences = resp.data.conferences;
-            this.number=resp.data.number;
           })
           .catch(error => {
               if (error.response.data.record===0){
                 this.number=0;
-                this.conferences=[];
               } else {
                 this.record=error.data.record;
                 this.currentPage=Math.ceil(this.record/6);
               }
               console.log(error);
-
           });
-
       },
-
-      deal(conference_id,choose){
-        this.$confirm('确定提交吗？', '确认信息', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-        }).then(() => {
-          this.$axios.post('/audit', {
-            conference_id:conference_id,
-            decision:choose
-          })
-            .then(resp => {
-              if (choose==='pass') {
-                this.$notify({
-                  title: '已批准该会议',
-                  message: '您可以在"已审核"中查看此会议的详细信息',
-                  type: 'success',
-                  position: 'top-left'
-                });
-                this.getInfo();
-              }else {
-                this.$notify({
-                  title: '已拒绝通过该会议',
-                  type: 'success',
-                  position: 'top-left'
-                });
-                this.getInfo();
-              }
-            })
-            .catch(error => {
-              this.$notify.error({
-                title: '处理失败',
-                message: '您可以再次尝试'
-              });
-              console.log(error);
-
-            });
-        }).catch(() => {
-          //取消注销消息提示
-          this.$message({
-            showClose: true,
-            message: '已取消处理~',
-            type: 'success'
-          });
-        });
-
-
-      },
-
 
       //刷新页面
       refresh() {
@@ -214,20 +176,21 @@
       },
 
       // --------------------跳转--------------------
-      //跳转已审核
-      goToAdminConferenceChecked(){
-        this.$router.push({path:'./AdminConferenceChecked'});
+      //跳转我的会议
+      goToMyConference(){
+        this.$router.push({path: './MyActivityCreated'});
       },
 
-      //跳转未审核
-      goToAdminConferenceUnChecked(){
-        this.$router.push({path:'./AdminConferenceUnChecked'});
+      //跳转程序委员会委员
+      goToPCMember(conference_id,conference_stage){
+        this.$router.push({path: './PCMember?conference_id='+conference_id});
       },
 
-      //跳转会议详情
-      goToConferenceDetail(conference_id){
-        this.$router.push({path:'./ConferenceDetail?conference_id='+conference_id});
-      },
+      //跳转作者
+      goToAuthor(conference_id,conference_stage){
+        this.$router.push({path: './Author?conference_id='+conference_id});
+      }
     },
   }
 </script>
+

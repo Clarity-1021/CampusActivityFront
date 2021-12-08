@@ -1,4 +1,4 @@
-<style src="../../../../../../static/mycss/Lab3/MyConference/Charactor/CharactorComponents/UploadPaper.css" lang="css" scoped></style>
+<style src="../../static/mycss/Lab3/MyConference/Charactor/CharactorComponents/UploadPaper.css" lang="css" scoped></style>
 <template>
   <div class="DisplayRow-2">
     <el-form class="mt-6" style="width: 88%; max-width: 800px" :model="submitForm" ref="submitForm" :rules="rules" status-icon>

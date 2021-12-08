@@ -3,22 +3,17 @@ import Router from 'vue-router'
 
 import Login from "../components/Login";
 import Register from "../components/Register";
-import NewActivity from "../components/Lab4/NewActivity";
-import Home from "../components/Lab3/Home";
-import MyConference from "../components/Lab4/MyConference/MyConference";
-import ActivityList from "../components/Lab3/UserConference/ActivityList";
-import Message from "../components/Lab4/Message";
-import Paper from "../components/Lab4/UserConference/Paper/Paper";
-import HotActivity from "../components/Lab4/UserConference/HotActivity";
-import AdminConferenceChecked from "../components/Lab4/AdminConference/AdminConferenceChecked";
-import AdminConferenceUnChecked from "../components/Lab3/AdminConference/AdminConferenceUnChecked";
-import MyConferenceAttend from "../components/Lab4/MyConference/MyConferenceAttend";
-import Chair from "../components/Lab5/MyConference/Charactor/Chair";
-import Author from "../components/Lab4/MyConference/Charactor/Author";
-import PCMember from "../components/Lab4/MyConference/Charactor/PCMember";
-import ScorePaper from "../components/Lab5/MyConference/Charactor/ScorePaper/ScorePaper";
-import DiscussPaper from "../components/Lab5/MyConference/Charactor/DiscussPaper/DiscussPaper";
-import HelloPage from "../components/Lab5/HelloPage";
+import NewActivity from "../components/User/NewActivity";
+import Home from "../components/Main/Home";
+import MyActivityCreated from "../components/My/MyActivityCreated";
+import MyActivityAttend from "../components/My/MyActivityAttend";
+import ActivityList from "../components/User/ActivityList";
+import HotActivity from "../components/User/HotActivity";
+import Message from "../components/User/Message";
+import AdminActivityChecked from "../components/Admin/AdminActivityChecked";
+import AdminActivityUnChecked from "../components/Admin/AdminActivityUnChecked";
+import ActivityDetail from "../components/User/ActivityDetail";
+import HelloPage from "../components/Main/HelloPage";
 import store from '../store'
 
 Vue.use(Router);
@@ -58,9 +53,9 @@ export const router = new Router({
       component: Register
     },
     {
-      path: '/MyConference',
-      name: 'MyConference',
-      component: MyConference,
+      path: '/MyActivityCreated',
+      name: 'MyActivityCreated',
+      component: MyActivityCreated,
       meta: {
         requireAuth: true // 需要登录权限
       }
@@ -82,14 +77,6 @@ export const router = new Router({
       }
     },
     {
-      path: '/Paper',
-      name: 'Paper',
-      component: Paper,
-      meta: {
-        requireAuth: true // 需要登录权限
-      }
-    },
-    {
       path: '/HotActivity',
       name: 'HotActivity',
       component: HotActivity,
@@ -98,65 +85,33 @@ export const router = new Router({
       }
     },
     {
-      path: '/AdminConferenceChecked',
-      name: 'AdminConferenceChecked',
-      component: AdminConferenceChecked,
+      path: '/AdminActivityChecked',
+      name: 'AdminActivityChecked',
+      component: AdminActivityChecked,
       meta: {
         requireAuth: true // 需要登录权限
       }
     },
     {
-      path: '/AdminConferenceUnChecked',
-      name: 'AdminConferenceUnChecked',
-      component: AdminConferenceUnChecked,
+      path: '/AdminActivityUnChecked',
+      name: 'AdminActivityUnChecked',
+      component: AdminActivityUnChecked,
       meta: {
         requireAuth: true // 需要登录权限
       }
     },
     {
-      path: '/MyConferenceAttend',
-      name: 'MyConferenceAttend',
-      component: MyConferenceAttend,
+      path: '/MyActivityAttend',
+      name: 'MyActivityAttend',
+      component: MyActivityAttend,
       meta: {
         requireAuth: true // 需要登录权限
       }
     },
     {
-      path: '/Chair',
-      name: 'Chair',
-      component: Chair,
-      meta: {
-        requireAuth: true // 需要登录权限
-      }
-    },
-    {
-      path: '/Author',
-      name: 'Author',
-      component: Author,
-      meta: {
-        requireAuth: true // 需要登录权限
-      }
-    },
-    {
-      path: '/PCMember',
-      name: 'PCMember',
-      component: PCMember,
-      meta: {
-        requireAuth: true // 需要登录权限
-      }
-    },
-    {
-      path: '/ScorePaper',
-      name: 'ScorePaper',
-      component: ScorePaper,
-      meta: {
-        requireAuth: true // 需要登录权限
-      }
-    },
-    {
-      path: '/DiscussPaper',
-      name: 'DiscussPaper',
-      component: DiscussPaper,
+      path: '/ActivityDetail',
+      name: 'ActivityDetail',
+      component: ActivityDetail,
       meta: {
         requireAuth: true // 需要登录权限
       }
@@ -169,15 +124,15 @@ export const router = new Router({
 //   if (to.matched.some(record => record.meta.requireAuth)) {
 //       if (store.state.token) {
 //         if (store.state.role==="admin") {
-//           if (to.path==="/Login"||to.path==="/Register"||to.path==="/AdminConferenceChecked"||to.path==="/AdminConferenceUnChecked"||to.path==="/ConferenceDetail") {
+//           if (to.path==="/Login"||to.path==="/Register"||to.path==="/AdminActivityChecked"||to.path==="/AdminActivityUnChecked"||to.path==="/ConferenceDetail") {
 //             next();
 //           }else {
 //             next({
-//               path: '/AdminConferenceUnChecked'
+//               path: '/AdminActivityUnChecked'
 //             })
 //           }
 //         }else {
-//           if (to.path!=="/AdminConferenceChecked"&&to.path!=="/AdminConferenceUnChecked") {
+//           if (to.path!=="/AdminActivityChecked"&&to.path!=="/AdminActivityUnChecked") {
 //             next();
 //           }else {
 //             next({
@@ -187,7 +142,7 @@ export const router = new Router({
 //         }
 //       } else {
 //         next({
-//           path: '/CS',
+//           path: '/HelloPage',
 //           query: {redirect: to.fullPath} // 登录成功之后重新跳转到该路由
 //         })
 //       }
