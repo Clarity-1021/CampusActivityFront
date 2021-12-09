@@ -30,7 +30,7 @@
           </div>
         </div>
         <div class="DisplayRow-2">
-          <ActivityDisplay :items="items" />
+          <ActivityDisplay :mode="'LookDetail'" :items="items" />
         </div>
       </div>
     </div>

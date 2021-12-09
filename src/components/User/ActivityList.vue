@@ -34,7 +34,7 @@
               <v-btn @click="OnSearch" :loading="progressSearch" dark color="green darken-3">搜索</v-btn>
             </v-col>
           </v-row>
-          <ActivityDisplay :items="items" />
+          <ActivityDisplay :mode="'LookDetail'" :items="items" />
 
         </div>
       </div>

@@ -13,7 +13,7 @@
     <v-data-iterator v-if="IsSelectionCard" :items="items" :items-per-page.sync="itemsPerPage" :page="page" hide-default-footer>
       <template v-slot:default="props">
         <v-row>
-          <v-col v-for="item in props.items" :key="item.id" cols="12" sm="6" md="4" lg="3">
+          <v-col v-for="(item, i) in props.items" :key="i" cols="12" sm="6" md="4" lg="3">
             <v-card class="mx-auto">
 
               <v-img height="250" src="https://cdn.vuetifyjs.com/images/cards/cooking.png"></v-img>
@@ -60,9 +60,22 @@
               <v-divider class="mx-4"></v-divider>
 
               <v-card-actions>
-                <v-btn color="green" text @click="CheckDetail(item)">
-                  查看详情
-                </v-btn>
+                <div v-if="mode==='LookDetail'">
+                  <v-btn color="green" text @click="CheckDetail(item)">
+                    查看详情
+                  </v-btn>
+                </div>
+                <div v-if="mode==='Edit'">
+                  <v-btn color="green" text @click="CheckDetail(item)">
+                    查看详情
+                  </v-btn>
+                  <v-btn color="blue" text @click="EditActivity(item)">
+                    编辑
+                  </v-btn>
+                  <v-btn color="red" text @click="DeleteActivity(item, i)">
+                    删除
+                  </v-btn>
+                </div>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -75,11 +88,25 @@
     </v-data-iterator>
     <!--表格-->
     <div v-else style="width: 100%">
-      <v-data-table sort-by="loanDate" sort-desc :headers="headers" :items="items" :page.sync="page" :items-per-page="itemsPerPage" hide-default-footer class="elevation-1" @page-count="numberOfPages">
+      <v-data-table sort-by="loanDate" sort-desc :headers="headers" :items="itemsComputed" :page.sync="page" :items-per-page="itemsPerPage" hide-default-footer class="elevation-1" @page-count="numberOfPages">
         <template v-slot:item.cz="{ item }">
-          <v-btn color="green" text @click="CheckDetail(item)">
-            查看详情
-          </v-btn>
+          {{item.index}}
+          <div v-if="mode==='LookDetail'">
+            <v-btn color="green" text @click="CheckDetail(item)">
+              查看详情
+            </v-btn>
+          </div>
+          <div v-if="mode==='Edit'">
+            <v-btn color="green" text @click="CheckDetail(item)">
+              查看详情
+            </v-btn>
+            <v-btn color="blue" text @click="EditActivity(item)">
+              编辑
+            </v-btn>
+            <v-btn color="red" text @click="DeleteActivity(item, item.index)">
+              删除
+            </v-btn>
+          </div>
         </template>
       </v-data-table>
       <v-pagination class="mt-3" color="green darken-3" v-model="page" :length="numberOfPages" :total-visible="itemsPerPage"></v-pagination>
@@ -110,6 +137,10 @@ export default {
     items:{
       type: Set,
       default: [],
+    },
+    mode:{
+      type: String,
+      default: 'LookDetail',
     }
   },
   computed: {
@@ -119,13 +150,63 @@ export default {
     IsSelectionCard () {
       return this.selection === 0;
     },
+    itemsComputed () {
+      return this.items.map((item, index) => {
+        item.index = index;
+        return item;
+      })
+    }
   },
   mounted() {
   },
   methods: {
+    // 查看详情
     CheckDetail (item) {
-      console.log(item.StartTime)
       this.$router.push({path:'./ActivityDetail'})
+    },
+
+    // 跳转编辑活动
+    EditActivity (item) {
+      this.$router.push({path:'./ActivityDetail'})
+    },
+
+    // 删除活动
+    DeleteActivity (item, i) {
+      this.$confirm('确定删除吗？', '确认删除', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+        }).then(() => {
+
+          // this.$axios.post(target,
+          // form,{
+          //   headers: {
+          //     'Content-Type': 'multipart/form-data;boundary = ' + new Date().getTime()
+          //   }
+          // })
+          // .then(resp => {
+            this.$message({
+              showClose: true,
+              message: '删除成功',
+              type: 'success'
+            });
+            this.items.splice(i, 1)
+          // })
+          // .catch(error => {
+          //   this.$notify.error({
+          //     title: '删除失败',
+          //     message: '您可以再次尝试'
+          //   });
+          //   console.log(error);
+          // });
+
+        }).catch(() => {
+          //取消注销消息提示
+          this.$message({
+            showClose: true,
+            message: '已取消上传~',
+            type: 'success'
+          });
+        })
     },
   },
 }

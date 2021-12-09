@@ -18,7 +18,7 @@
         </div>
         <!--第2行/内容框-->
         <div class="DisplayRow-2">
-          <ActivityDisplay :items="items" />
+          <ActivityDisplay :mode="'Edit'" :items="items" />
         </div>
       </div>
     </div>
@@ -35,28 +35,28 @@
         conferences:[],
         items: [
           {
-            FullName: '活动名称七个字',
+            FullName: '1活动名称七个字',
             Hoster: '主办方六个字',
             Place: '地点五个字',
             StartTime: '开始日期七个字',
             State: '状态'
           },
           {
-            FullName: '活动名称七个字',
+            FullName: '2活动名称七个字',
             Hoster: '主办方六个字',
             Place: '地点五个字',
             StartTime: '开始日期七个字',
             State: '状态'
           },
           {
-            FullName: '活动名称七个字',
+            FullName: '3活动名称七个字',
             Hoster: '主办方六个字',
             Place: '地点五个字',
             StartTime: '开始日期七个字',
             State: '状态'
           },
           {
-            FullName: '活动名称七个字',
+            FullName: '4活动名称七个字',
             Hoster: '主办方六个字',
             Place: '地点五个字',
             StartTime: '开始日期七个字',
