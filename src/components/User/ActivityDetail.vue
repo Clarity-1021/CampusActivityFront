@@ -268,8 +268,14 @@ export default {
         setTimeout(() => (this.progressSignUp = false), 2000)
 
         this.$notify({
-          title: '还款失败，请重试',
+          title: '报名提交失败，请重试',
           type: 'error'
+        });
+
+        this.$message({
+          showClose: true,
+          message: '报名成功',
+          type: 'success'
         });
       }
     },

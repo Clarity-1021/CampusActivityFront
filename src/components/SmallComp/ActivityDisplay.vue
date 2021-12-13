@@ -76,6 +76,14 @@
                     删除
                   </v-btn>
                 </div>
+                <div v-if="mode==='SignUp'">
+                  <v-btn color="green" text @click="CheckDetail(item)">
+                    查看详情
+                  </v-btn>
+                  <v-btn color="red" text @click="DeleteSignUp(item, i)">
+                    取消报名
+                  </v-btn>
+                </div>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -90,7 +98,6 @@
     <div v-else style="width: 100%">
       <v-data-table sort-by="loanDate" sort-desc :headers="headers" :items="itemsComputed" :page.sync="page" :items-per-page="itemsPerPage" hide-default-footer class="elevation-1" @page-count="numberOfPages">
         <template v-slot:item.cz="{ item }">
-          {{item.index}}
           <div v-if="mode==='LookDetail'">
             <v-btn color="green" text @click="CheckDetail(item)">
               查看详情
@@ -105,6 +112,14 @@
             </v-btn>
             <v-btn color="red" text @click="DeleteActivity(item, item.index)">
               删除
+            </v-btn>
+          </div>
+          <div v-if="mode==='SignUp'">
+            <v-btn color="green" text @click="CheckDetail(item)">
+              查看详情
+            </v-btn>
+            <v-btn color="red" text @click="DeleteSignUp(item, i)">
+              取消报名
             </v-btn>
           </div>
         </template>
@@ -161,13 +176,45 @@ export default {
   },
   methods: {
     // 查看详情
-    CheckDetail (item) {
-      this.$router.push({path:'./ActivityDetail'})
+    CheckDetail(item) {
+      this.$router.push({path: './ActivityDetail'})
     },
 
     // 跳转编辑活动
-    EditActivity (item) {
-      this.$router.push({path:'./ActivityDetail'})
+    EditActivity(item) {
+      this.$router.push({path: './ActivityDetail'})
+    },
+
+    DeleteSignUp(item, i)
+    {
+      this.$confirm('确定取消报名吗？', '确认取消', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(() => {
+
+        // this.$axios.post(target,
+        // form,{
+        //   headers: {
+        //     'Content-Type': 'multipart/form-data;boundary = ' + new Date().getTime()
+        //   }
+        // })
+        // .then(resp => {
+        this.$message({
+          showClose: true,
+          message: '取消成功',
+          type: 'success'
+        });
+        this.items.splice(i, 1)
+        // })
+        // .catch(error => {
+        //   this.$notify.error({
+        //     title: '取消失败',
+        //     message: '您可以再次尝试'
+        //   });
+        //   console.log(error);
+        // });
+
+      })
     },
 
     // 删除活动
@@ -198,14 +245,6 @@ export default {
           //   });
           //   console.log(error);
           // });
-
-        }).catch(() => {
-          //取消注销消息提示
-          this.$message({
-            showClose: true,
-            message: '已取消上传~',
-            type: 'success'
-          });
         })
     },
   },

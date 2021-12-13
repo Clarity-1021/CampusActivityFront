@@ -29,10 +29,6 @@
     name: 'MyActivityCreated',
     data() {
       return {
-        number: -1,
-        record:-1,
-        currentPage:1,
-        conferences:[],
         items: [
           {
             FullName: '1活动名称七个字',

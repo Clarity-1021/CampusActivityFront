@@ -161,10 +161,10 @@
             { required: true, message: '请在输入一次密码', trigger: 'blur' },
           ],
           region: [
-            {required: true, message: '请填写所属区域', trigger: 'blur' }
+            {required: true, message: '请填写学校', trigger: 'blur' }
           ],
           organization: [
-            {required: true, message: '请填写所属单位', trigger: 'blur' }
+            {required: true, message: '请填写组织', trigger: 'blur' }
           ],
         }
       };
